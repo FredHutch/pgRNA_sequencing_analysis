@@ -20,6 +20,7 @@ Pipeline and custom scripts for analyzing paired gRNA (pgRNA) sequencing data fo
 
 ## Running counter_efficient.R
 *check on updating version of R*
+
 *Add versions of R and packages*
 
 Arguments must be given in the following order:

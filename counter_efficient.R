@@ -11,6 +11,19 @@ import_library("tidyverse") # new version = 1.2.1
 
 
 ############################################################
+## Parse command line arguments                           ##
+############################################################
+
+args <- commandArgs(trailingOnly=TRUE)
+
+## make sure that all arguments have been supplied
+if(length(args)!=4){
+  stop("(1) annotations file, (2) gRNA1.bam file, (3) number of chunks, and 
+       (4) counts file must be supplied as arguments!",
+       call.=FALSE)
+}
+
+############################################################
 ## Build annotations                                      ##
 ############################################################
 
@@ -18,12 +31,15 @@ import_library("tidyverse") # new version = 1.2.1
 ## - Parse annotation file and initialize d.counts, which holds raw counts of reads
 ##   supporting each pgRNA.
 
-basedir = file.path ("/fh", "fast", "berger_a", "grp", "bergerlab_shared", "Projects",
-                     "paralog_pgRNA")
-file = file.path (basedir, "annotations", "paralog_pgRNA_annotations.txt")
+# basedir = file.path ("/fh", "fast", "berger_a", "grp", "bergerlab_shared", "Projects",
+#                      "paralog_pgRNA")
+# file = file.path (basedir, "annotations", "paralog_pgRNA_annotations.txt")
+# 
+# stopifnot (file.exists (file))
 
-stopifnot (file.exists (file))
-d.counts <- read_tsv (file, col_names=TRUE, col_types=cols())
+annot.file <- args[1]
+
+d.counts <- read_tsv (annot.file, col_names=TRUE, col_types=cols())
 
 
 ############################################################
@@ -38,18 +54,19 @@ d.counts <- read_tsv (file, col_names=TRUE, col_types=cols())
 ##   where max(n) is your number of samples
 
 ## read in command line argument(s); we expect: 
-##   args[1] to be the BAM file path and name, and 
-##   args[2] to be the number of chunks you want to split the BAM files into
-args <- commandArgs(trailingOnly=TRUE)
+##   args[2] to be the BAM file path and name, and 
+##   args[3] to be the number of chunks you want to split the BAM files into
+# args <- commandArgs(trailingOnly=TRUE)
+# 
+# ## make sure that all arguments have been supplied
+# if(length(args)!=4){
+#   stop("(1) annotations file, (2) gRNA1.bam file, (3) number of chunks, and 
+#        (4) counts file must be supplied as arguments!",
+#        call.=FALSE)
+# }
 
-## make sure that a file name has been supplied as an argument
-if(length(args)==0){
-  stop("gRNA1.bam filename and number of chunks must be supplied as arguments!",
-       call.=FALSE)
-}
-
-## assign args[1] to filename variable:
-files.1 <- args[1]
+## assign args[2] to filename variable:
+files.1 <- args[2]
 message(paste0("gRNA1 BAM file read in as:", files.1))
 
 files.2 <- gsub ("gRNA_1", "gRNA_2", files.1) # replace gRNA_1 with gRNA_2 in files.2 variable
@@ -91,8 +108,8 @@ message("Qnames extracted\n")
 ##   then splits those into separate sub-lists, and then assigns each qname to a sublist (group).
 chunk <- function(x,n) split(x, factor(sort(rank(x)%%n)))
 
-## assign args[2] to n.chunks variable and run chunk() function
-n.chunks <- as.numeric(args[2])
+## assign args[3] to n.chunks variable and run chunk() function
+n.chunks <- as.numeric(args[3])
 qnames_chunks <- chunk(qnames, n.chunks)
 
 ## lapply statement that loops through qname chunks
@@ -186,11 +203,10 @@ d.counts <- d.counts %>% dplyr::rename(!!new.counts := counts)
 
 message("Counts file made\n")
 
-## write per-sample output to tab-delimited counts file
-counts.filename <- paste0("counts_", sample, ".txt")
-counts.filepath <- file.path(basedir, "pgRNA_counts", "200722_HeLa_screen", counts.filename)
-write_tsv(d.counts, counts.filepath)
-message(paste0("Counts file written to: ", counts.filepath))
+## write per-sample output to tab-delimited counts file defined by args[4]
+counts.file <- args[4]
+write_tsv(d.counts, counts.file)
+message(paste0("Counts file written to: ", counts.file))
 
 message (paste0 ("Done (", signif (as.numeric (difftime (Sys.time(), timing, units = "mins")), 2), "m elapsed).\n"))
 
