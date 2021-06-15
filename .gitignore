@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+run_counter_efficient_one_sample.sh
+._counter_efficient.R
+._run_counter_efficient_array.sh
+._paralog_pgRNA_annotations.txt
