@@ -1,4 +1,4 @@
-# pgRNA_sequencing_analysis
+# pgPEN_sequencing_analysis
 Pipeline and custom scripts for analyzing paired gRNA (pgRNA) sequencing data for pgPEN screen.
 * For manuscript describing the pgPEN approach and results from PC9 and HeLa paralog screens, see: https://doi.org/10.1101/2020.12.20.423710.
   * For more information about the pgPEN sequencing strategy, see Fig. S1C.
