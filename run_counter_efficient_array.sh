@@ -11,7 +11,7 @@
 #SBATCH --mem=98G
 
 ## load appropriate R module with necessary packages
-module load R/3.6.2-foss-2018b-fh1
+module load R/3.6.2-foss-2019b-fh1
 
 ## assign variables
 script_dir="/home/pparrish/paralog_pgRNA_screen/scripts/pgRNA_sequencing_analysis/"
@@ -23,7 +23,8 @@ counts_file="${base_dir}pgRNA_counts/200722_HeLa_screen/counts_HeLa.sample${SLUR
 
 ## run script with args:
 ## (1) annotation file containing the ID and sequence for each pgRNA in the pgPEN library
-## (2) BAM file for gRNA 1 (BAM for gRNA 2 will be read in by substituting 2 for 1 in the file name)
+## (2) BAM file for gRNA 1 (BAM for gRNA 2 will be read in by substituting 2 for 1 in the file name);
+##       file name should be in the format cellLine.sampleN.gRNA_1.bam, where max(N) = number of samples
 ## (3) number of chunks to split the BAM files into (we used 50)
 ## (4) counts file to store output matrix of pgRNA counts
 Rscript "${script_dir}counter_efficient.R" "${annot_file}" "${gRNA1_bam}" "${n_chunks}" "${counts_file}"
